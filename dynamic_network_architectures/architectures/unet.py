@@ -115,11 +115,10 @@ class ResidualEncoderUNet(nn.Module):
 
         bottle_channels = self.encoder.output_channels[-1]
         self.classifier = nn.Sequential(
-            conv_op(bottle_channels, bottle_channels*2, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1)),
-            norm_op(bottle_channels*2, **norm_op_kwargs),
-            nonlin(**nonlin_kwargs),
             nn.AdaptiveAvgPool3d(1),
             nn.Flatten(),
+            nn.Linear(bottle_channels, bottle_channels*2),
+            nn.Linear(bottle_channels*2, bottle_channels*2),
             nn.Linear(bottle_channels*2, 3)
         )
 
